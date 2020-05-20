@@ -1,0 +1,40 @@
+<div class="container">
+
+
+  <span *ngFor="let row of matrix; let r=index;">
+    <span *ngFor="let column of row; let c=index;">
+
+
+
+
+      <span class="block" [ngStyle]="{'visibility':(showHiddenBlock==true)?'visible':(matrix[r][c]==15)?'hidden':'visible',
+  'background-size': '100% 100%',
+  'background-image': 'url(assets/panda/image_part_00' + (matrix[r][c]+1) + '.jpg)'}" (click)="move(r,c)"><span
+          *ngIf="showHint">{{matrix[r][c]+1}}</span>&nbsp;
+
+
+
+
+
+
+
+
+
+      </span>
+
+
+
+
+
+
+
+
+    </span> <br />
+  </span>
+
+
+
+
+  <span style="cursor: pointer;" (click)="showHint=!showHint">Show Hint</span>
+
+</div>
