@@ -16,78 +16,19 @@ export class AppComponent {
 
   constructor() {
 
-    this.shuffle();
+    this.shuffleByUser();
 
 
   }
 
-  shuffle() {
-
-    this.randomArrayShuffle(this.randomArray);
-
-
-
-
-    let inversions = 0;
-    for (let i = 0; i < this.randomArray.length; i++) {
-      for (let j = i + 1; j < this.randomArray.length; j++) {
-        if (this.randomArray[i] > this.randomArray[j] && (this.randomArray[i] != 15 || this.randomArray[j] != 15)) {
-          inversions++;
-        }
-      }
-    }
-    let index = this.randomArray.indexOf(15);
-    if (inversions % 2 == 1 && (index >= 0 && index <= 3 || index >= 8 && index <= 11)) {
-      let c = 0;
-
-
-      for (let i = 0; i < this.SIZE; i++) {
-        for (let j = 0; j < this.SIZE; j++) {
-          this.matrix[i][j] = this.randomArray[c++];
-
-        }
-      }
-      return;
-    }
-    if (inversions % 2 == 0 && (index >= 4 && index <= 7 || index >= 12 && index <= 15)) {
-      let c = 0;
-
-
-      for (let i = 0; i < this.SIZE; i++) {
-        for (let j = 0; j < this.SIZE; j++) {
-          this.matrix[i][j] = this.randomArray[c++];
-
-        }
-      }
-      return;
-    }
-    let temp;
-    if (index >= 13) {
-
-      if (this.randomArray[13] == 15) {
-        temp = this.randomArray[14];
-        this.randomArray[14] = this.randomArray[15];
-        this.randomArray[15] = temp;
-      } else if (this.randomArray[14] == 15) {
-        temp = this.randomArray[13];
-        this.randomArray[13] = this.randomArray[15];
-        this.randomArray[15] = temp;
-      } else {
-        temp = this.randomArray[13];
-        this.randomArray[13] = this.randomArray[14];
-        this.randomArray[14] = temp;
-
-      }
-    } else {
-      temp = this.randomArray[14];
-      this.randomArray[14] = this.randomArray[15];
-      this.randomArray[15] = temp;
-
-    }
-
+  shuffleByUser() {
+    while (!this.shuffle());
 
     let c = 0;
-
+    let index0 = this.randomArray.indexOf(0);
+    let index15 = this.randomArray.indexOf(15);
+    this.randomArray[index0] = 15;
+    this.randomArray[index15] = 0;
 
     for (let i = 0; i < this.SIZE; i++) {
       for (let j = 0; j < this.SIZE; j++) {
@@ -95,7 +36,45 @@ export class AppComponent {
 
       }
     }
+  }
 
+
+
+
+
+  shuffle() {
+
+    this.randomArrayShuffle(this.randomArray);
+
+    let parity = 0;
+    let gridWidth = 4;
+    let row = 0; // the current row we are on
+    let blankRow = 0; // the row with the blank tile
+
+    for (let i = 0; i < this.randomArray.length; i++) {
+      if (i % gridWidth == 0) { // advance to next row
+        row++;
+      }
+      if (this.randomArray[i] == 0) { // the blank tile
+        blankRow = row; // save the row on which encountered
+        continue;
+      }
+      for (let j = i + 1; j < this.randomArray.length; j++) {
+        if (this.randomArray[i] > this.randomArray[j] && this.randomArray[j] != 0) {
+          parity++;
+        }
+      }
+    }
+
+    if (gridWidth % 2 == 0) { // even grid
+      if (blankRow % 2 == 0) { // blank on odd row; counting from bottom
+        return parity % 2 == 0;
+      } else { // blank on even row; counting from bottom
+        return parity % 2 != 0;
+      }
+    } else { // odd grid
+      return parity % 2 == 0;
+    }
 
 
 
